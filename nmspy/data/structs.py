@@ -19,6 +19,383 @@ from nmspy.memutils import map_struct
 from nmspy.utils import safe_assign_enum
 
 #------------------------------------------------------------------------------------User Added Structs----------------------------------------------------------------------------------------------------
+class cGcPlayerController_vtbl(ctypes.Structure):
+    cGcPlayerController_dtor_0: bytes
+    GetButtonInput: bytes
+    GetAnalogInput: bytes
+
+cGcPlayerController_vtbl._fields_ = [
+    ("cGcPlayerController_dtor_0", ctypes.c_ubyte * 0x8),
+    ("GetButtonInput", ctypes.c_ubyte * 0x8),
+    ("GetAnalogInput", ctypes.c_ubyte * 0x8),
+]
+
+class cGcPlayerController(ctypes.Structure):
+    __vftable: _Pointer["cGcPlayerController_vtbl"]
+
+cGcPlayerController._fields_ = [
+    ("__vftable", ctypes.POINTER(cGcPlayerController_vtbl)),
+]
+
+class cGcHumanController(cGcPlayerController, ctypes.Structure):
+    _mePort: ctypes.c_int32
+
+cGcHumanController._fields_ = [
+    ("_mePort", ctypes.c_int32),
+]
+
+""" class cGcHumanController_vtbl(ctypes.Structure):
+    cGcPlayerController_dtor_0: bytes
+    GetButtonInput: bytes
+    GetAnalogInput: bytes
+
+cGcHumanController_vtbl._fields_ = [
+    ("cGcPlayerController_dtor_0", ctypes.c_ubyte * 0x8),
+    ("GetButtonInput", ctypes.c_ubyte * 0x8),
+    ("GetAnalogInput", ctypes.c_ubyte * 0x8),
+] """
+
+class cGcStatusMessageMissionMarkup(ctypes.Structure):
+    _meMissionMarkup: ctypes.c_int32
+
+cGcStatusMessageMissionMarkup._fields_ = [
+    ("_meMissionMarkup", ctypes.c_int32),
+]
+
+class cGcStatusMessageDefinition(ctypes.Structure):
+    id: common.TkID[0x10]
+    message: common.TkID[0x20]
+    addPlayerNamePrefix: bool
+    addPetNamePrefix: bool
+    addFriendlyDronePrefix: bool
+    includePlayerName: bool
+    _meReplicateTo: ctypes.c_int32
+    postLocally: bool
+    distance: float
+    displayDurationMultiplier: float
+    onlyInMultiplayer: bool
+    onlyOnFireteam: bool
+    missionMarkup: "cGcStatusMessageMissionMarkup"
+
+cGcStatusMessageDefinition._fields_ = [
+    ("id", common.TkID[0x10]),
+    ("message", common.TkID[0x20]),
+    ("addPlayerNamePrefix", ctypes.c_ubyte),
+    ("addPetNamePrefix", ctypes.c_ubyte),
+    ("addFriendlyDronePrefix", ctypes.c_ubyte),
+    ("includePlayerName", ctypes.c_ubyte),
+    ("_meReplicateTo", ctypes.c_int32),
+    ("postLocally", ctypes.c_ubyte),
+    ("distance", ctypes.c_float),
+    ("displayDurationMultiplier", ctypes.c_float),
+    ("onlyInMultiplayer", ctypes.c_ubyte),
+    ("onlyOnFireteam", ctypes.c_ubyte),
+    ("missionMarkup", cGcStatusMessageMissionMarkup),
+]
+
+class cGcStatusMessageDefinitions(ctypes.Structure):
+    messages: common.cTkDynamicArray[cGcStatusMessageDefinition]
+    missionMarkupColour: common.Colour
+    petVocabulary: bytes
+    petChatTemplates: bytes
+    friendlyDroneChatTemplates: bytes
+
+cGcStatusMessageDefinitions._fields_ = [
+    ("messages", common.cTkDynamicArray[cGcStatusMessageDefinition]),
+    ("missionMarkupColour", common.Colour),
+    ("petVocabulary", ctypes.c_ubyte * 0x348),
+    ("petChatTemplates", ctypes.c_ubyte * 0x498),
+    ("friendlyDroneChatTemplates", ctypes.c_ubyte * 0xA0),
+]
+
+""" class TextChatMessageBuffer(ctypes.Structure):
+     _fields_ = [
+        ("nextMessageInsertIndex", ctypes.c_int32)
+        ("messages", ctypes.c_int32)
+        ("messageBuffer", ctypes.c_ubyte)
+        ] """
+     
+class TextChatMessageBuffer(ctypes.Structure):
+    nextMessageInsertIndex: int
+    messages: int
+    messageBuffer: bytes
+
+TextChatMessageBuffer._fields_ = [
+    ("nextMessageInsertIndex", ctypes.c_int32),
+    ("messages", ctypes.c_int32),
+    ("messageBuffer", ctypes.c_ubyte * 0x2DA0),
+]
+
+""" class cGcTextChatManager(ctypes.Structure):
+     _fields_ = [
+        ("pendingMessages", ctypes.c_ubyte)
+        ("messageBuffer", TextChatMessageBuffer)
+        ("lastMessageType", ctypes.c_ubyte)
+        ("nextMessageId", ctypes.c_int32)
+        #("statusMessageTable",ctypes.POINTER(cGcStatusMessageDefinitions))
+        ("stringCountHash", ctypes.c_ubyte)
+        ] """
+
+class cGcTextChatManager(ctypes.Structure):
+    pendingMessages: bytes
+    messageBuffer: "TextChatMessageBuffer"
+    lastMessageType: bytes
+    nextMessageId: int
+    statusMessageTable: _Pointer["cGcStatusMessageDefinitions"]
+    stringCountHash: bytes
+
+cGcTextChatManager._fields_ = [
+    ("pendingMessages", ctypes.c_ubyte * 0x55A0),
+    ("messageBuffer", TextChatMessageBuffer),
+    ("lastMessageType", ctypes.c_ubyte * 0x1),
+    ("nextMessageId", ctypes.c_int32),
+    ("statusMessageTable", ctypes.POINTER(cGcStatusMessageDefinitions)),
+    ("stringCountHash", ctypes.c_ubyte * 0x50),
+]
+
+class StbUndoState(ctypes.Structure):
+    undo_rec: bytes
+    undo_char: bytes
+    undo_point: int
+    redo_point: int
+    undo_char_point: int
+    redo_char_point: int
+
+StbUndoState._fields_ = [
+    ("undo_rec", ctypes.c_ubyte * 0x4A4),
+    ("undo_char", ctypes.c_ubyte * 0x3E7),
+    ("undo_point", ctypes.c_int16),
+    ("redo_point", ctypes.c_int16),
+    ("undo_char_point", ctypes.c_int16),
+    ("redo_char_point", ctypes.c_int16),
+]
+
+class STB_TexteditState(ctypes.Structure):
+    cursor: int
+    select_start: int
+    select_end: int
+    insert_mode: int
+    cursor_at_end_of_line: int
+    initialized: int
+    has_preferred_x: int
+    single_line: int
+    padding1: int
+    padding2: int
+    padding3: int
+    preferred_x: float
+    undostate: "StbUndoState"
+
+STB_TexteditState._fields_ = [
+    ("cursor", ctypes.c_int32),
+    ("select_start", ctypes.c_int32),
+    ("select_end", ctypes.c_int32),
+    ("insert_mode", ctypes.c_uint8),
+    ("cursor_at_end_of_line", ctypes.c_uint8),
+    ("initialized", ctypes.c_uint8),
+    ("has_preferred_x", ctypes.c_uint8),
+    ("single_line", ctypes.c_uint8),
+    ("padding1", ctypes.c_uint8),
+    ("padding2", ctypes.c_uint8),
+    ("padding3", ctypes.c_uint8),
+    ("preferred_x", ctypes.c_float),
+    ("undostate", StbUndoState),
+]
+
+class cTkNGuiWindowLayoutData(ctypes.Structure):
+    name: common.cTkFixedString[0x80]
+    tabs: bytes
+    positionX: float
+    positionY: float
+    sizeX: float
+    sizeY: float
+    separator: float
+    activeTabIdx: int
+    scrollX: float
+    scrollY: float
+    _meWindowState: ctypes.c_int32
+
+cTkNGuiWindowLayoutData._fields_ = [
+    ("name", common.cTkFixedString[0x80]),
+    ("tabs", ctypes.c_ubyte * 0x1000),
+    ("positionX", ctypes.c_float),
+    ("positionY", ctypes.c_float),
+    ("sizeX", ctypes.c_float),
+    ("sizeY", ctypes.c_float),
+    ("separator", ctypes.c_float),
+    ("activeTabIdx", ctypes.c_int32),
+    ("scrollX", ctypes.c_float),
+    ("scrollY", ctypes.c_float),
+    ("_meWindowState", ctypes.c_int32),
+]
+
+class cTkNGuiElementID(ctypes.Structure):
+    counter: int
+    base: int
+    frameRenderTracker: int
+    perFrameUseCount: int
+
+cTkNGuiElementID._fields_ = [
+    ("counter", ctypes.c_int64),
+    ("base", ctypes.c_uint64),
+    ("frameRenderTracker", ctypes.c_int32),
+    ("perFrameUseCount", ctypes.c_int32),
+]
+
+class cTkNGuiWindowData(ctypes.Structure):
+    guiCreateCallback: bytes
+    guiRenderCallback: bytes
+    callbackData: int
+    title: common.cTkFixedString[0x80]
+    layout: _Pointer["cTkNGuiWindowLayoutData"]
+    isDragged: bool
+    isResizedX: bool
+    isResizedY: bool
+    searchActive: bool
+    searchFilter: common.cTkFixedString[0x100]
+    errors: std.vector[common.cTkFixedString[0x80]]
+    snappedIdX: "cTkNGuiElementID"
+    snappedIdY: "cTkNGuiElementID"
+    requestClose: bool
+    dragOffsetX: float
+    dragOffsetY: float
+    tabArray: std.vector[cTkNGuiElementID]
+
+cTkNGuiWindowData._fields_ = [
+    ("guiCreateCallback", ctypes.c_ubyte * 0x8),
+    ("guiRenderCallback", ctypes.c_ubyte * 0x8),
+    ("callbackData", ctypes.c_void_p),
+    ("title", common.cTkFixedString[0x80]),
+    ("layout", ctypes.POINTER(cTkNGuiWindowLayoutData)),
+    ("isDragged", ctypes.c_ubyte),
+    ("isResizedX", ctypes.c_ubyte),
+    ("isResizedY", ctypes.c_ubyte),
+    ("searchActive", ctypes.c_ubyte),
+    ("searchFilter", common.cTkFixedString[0x100]),
+    ("errors", std.vector[common.cTkFixedString[0x80]]),
+    ("snappedIdX", cTkNGuiElementID),
+    ("snappedIdY", cTkNGuiElementID),
+    ("requestClose", ctypes.c_ubyte),
+    ("dragOffsetX", ctypes.c_float),
+    ("dragOffsetY", ctypes.c_float),
+    ("tabArray", std.vector[cTkNGuiElementID]),
+]
+
+class cTkNGuiEditor(ctypes.Structure):
+    class cTkNGuiCategoryLookup(ctypes.Structure):
+        name: common.cTkFixedString[0x40]
+        parentIndex: int
+        members: std.vector[cTkNGuiElementID]
+
+    cTkNGuiCategoryLookup._fields_ = [
+        ("name", common.cTkFixedString[0x40]),
+        ("parentIndex", ctypes.c_int32),
+        ("members", std.vector[cTkNGuiElementID]),
+    ]
+
+
+    class cTkTaskbarStackItem(ctypes.Structure):
+        index: int
+        yPos: float
+
+    cTkTaskbarStackItem._fields_ = [
+        ("index", ctypes.c_int32),
+        ("yPos", ctypes.c_float),
+    ]
+
+
+    class DoTaskBar(ctypes.Structure):
+        class __l4(ctypes.Structure):
+            class WindowLookup(ctypes.Structure):
+                windowID: "cTkNGuiElementID"
+                window: _Pointer["cTkNGuiWindowData"]
+                baseWindow: _Pointer["cTkNGuiWindowData"]
+
+            WindowLookup._fields_ = [
+                ("windowID", cTkNGuiElementID),
+                ("window", ctypes.POINTER(cTkNGuiWindowData)),
+                ("baseWindow", ctypes.POINTER(cTkNGuiWindowData)),
+            ]
+
+
+
+        __l4._fields_ = []
+
+
+
+    DoTaskBar._fields_ = []
+
+
+
+cTkNGuiEditor._fields_ = []
+
+class cTkNGuiElementID(ctypes.Structure):
+    counter: int
+    base: int
+    frameRenderTracker: int
+    perFrameUseCount: int
+
+cTkNGuiElementID._fields_ = [
+    ("counter", ctypes.c_int64),
+    ("base", ctypes.c_uint64),
+    ("frameRenderTracker", ctypes.c_int32),
+    ("perFrameUseCount", ctypes.c_int32),
+]
+
+class cTkNGuiTextEditState_vtbl(ctypes.Structure):
+    cTkNGuiTextEditState_dtor_0: bytes
+
+cTkNGuiTextEditState_vtbl._fields_ = [
+    ("cTkNGuiTextEditState_dtor_0", ctypes.c_ubyte * 0x8),
+]
+
+class cTkNGuiTextEditState(ctypes.Structure):
+    _fields_ = [
+        ("__vftable", ctypes.POINTER(cTkNGuiTextEditState_vtbl)),
+        ("editedText", common.cTkFixedString[0x200]),
+        ("initialText", common.cTkFixedString[0x200]),
+        ("shelvedTextEdit", common.cTkFixedString[0x200]),
+        ("shelvedEditID", cTkNGuiElementID),
+        ("width", ctypes.c_float),
+        ("scrollX", ctypes.c_float),
+        ("initTime", ctypes.c_float),
+        ("navigateTime", ctypes.c_float),
+        ("stbState", ctypes.POINTER(STB_TexteditState)),
+        ("doubleClicked", ctypes.c_ubyte),
+        ("gui", ctypes.POINTER(cTkNGuiEditor))
+    ]
+
+
+
+class cGcTextChatInput(ctypes.Structure):
+    editText: "cTkNGuiTextEditState"
+    text: common.cTkFixedString[0x3FF]
+    inputTextDisplayString: common.cTkFixedString[0x3FF]
+    textInputActive: bool
+    waitingForNoKeyboardInput: bool
+    buttonReleased: bool
+    currentCommand: enum|nms_enums.eTextChatCommands
+    pendingCommand: enum|nms_enums.eTextChatCommands
+    lookupTable: _Pointer["cGcTextChatInput.SCommandLookup"]
+    class SCommandLookup(ctypes.Structure):
+        commandName: bytes
+        shortCommandName: bytes
+
+    SCommandLookup._fields_ = [
+        ("commandName", ctypes.c_char_p),
+        ("shortCommandName", ctypes.c_char_p),
+    ]
+cGcTextChatInput._fields_ = [
+    ("editText", cTkNGuiTextEditState),
+    ("text", common.cTkFixedString[0x3FF]),
+    ("inputTextDisplayString", common.cTkFixedString[0x3FF]),
+    ("textInputActive", ctypes.c_ubyte),
+    ("waitingForNoKeyboardInput", ctypes.c_ubyte),
+    ("buttonReleased", ctypes.c_ubyte),
+    ("currentCommand", ctypes.c_int32),
+    ("pendingCommand", ctypes.c_int32),
+    ("lookupTable", ctypes.POINTER(cGcTextChatInput.SCommandLookup)),
+]
+
 class VkExtent3D(ctypes.Structure):
      _fields_ = [
         ("width", ctypes.c_uint32),
