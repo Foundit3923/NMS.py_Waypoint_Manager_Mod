@@ -189,9 +189,9 @@ class cTkTextureStreamFuncs(ctypes.Structure):
 class cGcPlayer(ctypes.Structure):
     #position: cTkVector3 -> (common.Vector3f, common.Vector3f)
     position: common.Vector3f
-        
+
 cGcPlayer._fields_ = [
-    ("_padding0", ctypes.c_ubyte * 255514), #49076), 
+    ("_padding0", ctypes.c_ubyte * 255514), #49076),
     ("position", common.Vector3f),
     ]
 
@@ -394,7 +394,7 @@ class cGcNGuiLayer(cGcNGuiElement, ctypes.Structure):
     elementHashTable: bytes
     uniqueID: int
     expanded: bool
-     
+
 cGcNGuiLayer._fields_ = [
     ("elements", std.vector[ctypes.POINTER(cGcNGuiElement)]),
     ("layerElements", std.vector[ctypes.POINTER(cGcNGuiLayer)]),
@@ -483,7 +483,7 @@ class cTkTexture(cTkTextureBase, ctypes.Structure):
         ("mipZeroPages", ctypes.c_int16),
         ("mipZeroUnusedPages", ctypes.c_int16),
         ("isPartiallyResident", ctypes.c_ubyte),
-    ]   
+    ]
 
 class cTkDynamicTexture(ctypes.Structure):
     _fields_ = [
@@ -501,7 +501,7 @@ class cTk2dImage(ctypes.Structure):
         ("visible",ctypes.c_ubyte),
         ("tiledUV",ctypes.c_ubyte),
         ("isRenderTarget",ctypes.c_ubyte),
-    ] 
+    ]
 """     uVs: cTkVector2[4] -> (std.array[common.Vector2f, 0x4], std.array[common.Vector2f, 0x4])
     texture: cTkTexture * -> (ctypes.POINTER(cTkTexture), _Pointer[cTkTexture])
     dynamicTexture: cTkDynamicTexture * -> (ctypes.POINTER(cTkDynamicTexture), _Pointer[cTkDynamicTexture])
@@ -3776,8 +3776,8 @@ class cGcNGui(ctypes.Structure):
         ("hasCustomSize", ctypes.c_byte),
         ("isInWorld", ctypes.c_ubyte),
         ("tk3dLayer", cTk3dLayer),
-        ("tk2dImage", cTk2dImage),    
-    ] 
+        ("tk2dImage", cTk2dImage),
+    ]
 
 class cGcPlayerHUD(ctypes.Structure):
     _fields_ = [
